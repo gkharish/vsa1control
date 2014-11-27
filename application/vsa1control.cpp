@@ -170,7 +170,7 @@
             strcpy(buf,"Start");
             PID_control -> client_send(buf);
             cout << "\n Client running .....";
-            bzero(buf, BUFLEN);
+            
             /*for(control_len = 0; control_len <= control_size-1; control_len++)
             {
                u_char << u(control_len); 
@@ -193,13 +193,13 @@
                 for(state_len = 0; state_len <= states_size -1; state_len++)
                 {
                     //memset(buf, 0, sizeof(buf));
-                    bzero(buf, BUFLEN);
+                    
                     PID_control -> client_recv(buf);
                     //double position = atof(buf);
                     previous_state(state_len) = atof(buf);
                     cout << "inside client recv for loop";
                     //flush buf
-                    bzero(buf, BUFLEN);
+                    
                 }
                 
                 
@@ -216,14 +216,14 @@
                 
                 for(control_len = 0; control_len <= control_size-1; control_len++)
                 {
-                   bzero(u_char, sizeof(u_char));
-                   bzero(buf, BUFLEN);
+                   
+                   
                    u_char << u(control_len); 
                    strcpy(buf, u_char.str().c_str());
                    PID_control -> client_send(buf);
                    //flush buf
-                   bzero(u_char, sizeof(u_char));
-                   bzero(buf, BUFLEN);
+                  
+                   
                 }
                 
                 /* Data storage */
