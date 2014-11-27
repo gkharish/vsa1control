@@ -220,12 +220,12 @@
                    
                    u_char << u(control_len); 
                    strcpy(buf, u_char.str().c_str());
-                   PID_control -> client_send(buf);
+                   strcpy(buf,"%");
+                   //PID_control -> client_send(buf);
                    //flush buf
                   
-                   
                 }
-                
+                PID_control -> client_send(buf);
                 /* Data storage */
                /* whileloop_counter++;
                 reference_traj.col(whileloop_counter) << 0,0, reference_position,0;
