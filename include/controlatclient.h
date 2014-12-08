@@ -12,9 +12,9 @@
 using namespace std;
 using namespace Eigen;
 
-    class  control_model :    public ClientUDP   
+class  control_model :    public ClientUDP   
 {
-        protected:
+    protected:
             
             //PID controller parameters
             double _p;
@@ -23,23 +23,19 @@ using namespace Eigen;
             int nDOF_;
             //MatrixXd reference_traj, state_traj, control_traj;
             
-        public:
-                /// Constructor
-                control_model () : ClientUDP()
-                {
+    public:
+            /// Constructor
+            control_model () : ClientUDP()
+            {
                     
-                }
+            }
                 
-                void setpidcoeff(int p, int i, int d);
-                //MatrixXd trajecotystore(MatrixXd reference_traj, MatrixXdstate_traj, MatrixXd control_traj, int col);
-                //MatrixXd trajectorystore(VectorXd traj, int column);
-                VectorXd pid(Vector3d coefficient, double error_component );
-                VectorXd getControl (VectorXd statevector, double reference_position, double position);
+            void setpidcoeff(int p, int i, int d);
+            //MatrixXd trajecotystore(MatrixXd reference_traj, MatrixXdstate_traj, MatrixXd control_traj, int col);
+            //MatrixXd trajectorystore(VectorXd traj, int column);
+            VectorXd pid(Vector3d coefficient, double error_component );
+            VectorXd getControl (VectorXd statevector, double reference_position, double position);
                 
-               
-        
-         
-  
-    };
+};
     
 #endif
