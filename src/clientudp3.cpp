@@ -50,22 +50,21 @@ bool ClientUDP::client_start()
     }
     
     slen = sizeof(remaddr);
-    cout <<  "\n" << "Client object created";
+    
 }
     
     
 
 bool ClientUDP::client_send(char* buf, int size)
 {
-    cout <<  "\n Client send control value :" << buf;
+    
     	
 	if (sendto(fd, buf, size, 0, (struct sockaddr *)&remaddr, slen)==-1) 
 	{
 		perror("sendto");
 		exit(1);
 	}
-    cout <<  "\n ... Client send done";
-    //write(1,"client sent data over UDP: ",12);
+    
 }
     
    
@@ -76,10 +75,10 @@ bool ClientUDP::client_recv(char* buf, int size)
     if (recvlen >= 0)
     {
         buf[recvlen] = 0;	/* expect a printable string - terminate it */
-        cout << "\n Client receiving link position:" <<  buf << "\n";
+        
     }
             
-    cout <<  "\n" << "...Client recv done";
+    
     return true;
 }
     

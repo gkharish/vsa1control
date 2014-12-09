@@ -27,7 +27,7 @@ VectorXd control_model::getControl (VectorXd statevector, double reference_posit
     coefficient(2) = _d;
     control = pid(coefficient, error_component);
                         
-    cout << "\n" << "pid coeffs are: " << coefficient;
+    
     return control;
 }
         
@@ -37,7 +37,7 @@ void control_model::setpidcoeff(int p, int i, int d)
     _p = p;
     _i = i;
     _d= d;
-    cout << "\n" << "pid coeff is set";
+    
 }
         
 VectorXd control_model::pid(Vector3d coeffecient, double error_component)
@@ -152,8 +152,7 @@ void principal_function(void *argv)
 {
     
             
-    cout << "\n INSIDE Principal_function";
-            
+    
     /* variables used in the principal program */
     int whileloop_counter = 0, error_counter = 0, loop = 0;
     int timeofsimulation_s = 30; /* time in seconds*/
@@ -208,7 +207,7 @@ void principal_function(void *argv)
     VectorXd previous_state = initial_state;
             
     /* initializing data storage*/
-    state_traj.resize (timeofsimulation_s*numsamples_s, initial_state.size () );
+    state_traj.resize (timeofsimulation_s*numsamples_s, initial_state.size() );
     state_traj.row(0) = initial_state;
             
     reference_traj.resize(timeofsimulation_s*numsamples_s, ref_init.size());
@@ -222,7 +221,7 @@ void principal_function(void *argv)
             
     now = rt_timer_read();
     time_start_loop  = round(now/1.0e9);
-    cout << "Start of while loop:" << time_start_loop;
+    
             
             
     /* ** sending controls  **** */ 
@@ -231,18 +230,18 @@ void principal_function(void *argv)
     states_size = previous_state.size();
             
             /**/
-    cout << "\n Sending request to server .....";
+    
     send_packet.CLIENT_HEADER = '0';
     send_packet.control_cmd[0] = u(0);
     send_packet.control_cmd[1] = u(1);
     send_packet.control_cmd[2] = u(2);
     buffer_send = (char*)&send_packet;
-    cout << "\n after buffer load and before client send :" << buffer_send;
-    struct udppacket_control *asp_control = &send_packet;
-    std::cout << "\n  server message received is unsigned int: " << *asp_control << std::endl;
+    
+    //struct udppacket_control *asp_control = &send_packet;
+    //std::cout << "\n  server message received is unsigned int: " << *asp_control << std::endl;
     PID_control -> client_send(buffer_send, sizeof(send_packet));
     
-    cout << "\n Client running .....";
+    
 
     while(FLAG)
     {
@@ -252,7 +251,7 @@ void principal_function(void *argv)
         present_time  = round(now/1.0e9);
         t = present_time - time_start_loop;
         double reference_position = reference_generator(ref_pos);
-        cout << "inside client while ";
+        
         
         /* ** Recive data from server ** */
         PID_control -> client_recv(recv_buffer, BUFLEN);
@@ -266,7 +265,7 @@ void principal_function(void *argv)
     		        
     		    recv_packet_DAQ = (udppacket_DAQ *)recv_buffer;
     		        
-        	    std::cout << "\n  server message received is DAQ float type: " << *recv_packet_DAQ << std::endl;
+        	    //std::cout << "\n  server message received is DAQ float type: " << *recv_packet_DAQ << std::endl;
         	    break;
     	    }
     		    
@@ -276,7 +275,7 @@ void principal_function(void *argv)
     	    {
     		    recv_packet_COUNTER = (udppacket_COUNTER *)recv_buffer;
     		        
-        	    std::cout << "\n  server message received is COUNTER of signed int type : " << *recv_packet_COUNTER << std::endl;
+        	    //std::cout << "\n  server message received is COUNTER of signed int type : " << *recv_packet_COUNTER << std::endl;
         	    break;
             }
     		    
@@ -297,28 +296,28 @@ void principal_function(void *argv)
 
         /* ** Clinet send control data ** */
         
-        send_packet.CLIENT_HEADER = '0';
+        send_packet.CLIENT_HEADER  = '0';
         send_packet.control_cmd[0] = u(0);
         send_packet.control_cmd[1] = u(1);
         send_packet.control_cmd[2] = u(2);
         buffer_send = (char*)&send_packet;
-        cout << "\n after buffer load and before client send :" << buffer_send;
+        //cout << "\n after buffer load and before client send :" << buffer_send;
         struct udppacket_control *asp_control = &send_packet;
         std::cout << "\n  client message send is unsigned int: " << *asp_control << std::endl;
         PID_control -> client_send(buffer_send, sizeof(send_packet));
                 
         /* Data storage */
-        /* whileloop_counter++;
-        reference_traj.col(whileloop_counter) << 0,0, reference_position,0;
+         whileloop_counter++;
+        reference_traj.row(whileloop_counter) << 0, 0, reference_position, 0;
         state_traj.row(whileloop_counter)(2) = position;
-        control_traj.row(whileloop_counter) = u;*/
+        control_traj.row(whileloop_counter) = u;
         /*Data storage ends*/
                 
         /*state_traj = trajectorystore(previous_state, whileloop_counter);
         control_traj = trajectorystore(u, whileloop_counter); 
         reference_traj = trajectorystore(ref_init, whileloop_counter);*/
                 
-        whileloop_counter++;
+        //whileloop_counter++;
         cout << "/n the time past is : " << t;
         if(t >= timeofsimulation_s)
         {
@@ -350,13 +349,13 @@ int main (int argc, char* argv[])
     //FILE* statetrajdata, referencetrajdata, controldata;
     //char* path = "/usr/users/localuser/softdev/vsa1control/data/state_trajectory.xls"; 
             
-    ofstream statetrajdata, referencetrajdata, controltrajdata;;
+    ofstream statetrajdata, referencetrajdata, controltrajdata;
     signal(SIGTERM, catch_signal);
     signal(SIGINT, catch_signal);
     char* a;
     mlockall(MCL_CURRENT|MCL_FUTURE);
 	        
-    cout << "INSIDE MAIN" << endl;
+    
 
     n = rt_task_create(&principal_task, "principal_function", 0, 99, 0);
     if (n!=0)
