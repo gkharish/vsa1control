@@ -307,15 +307,12 @@ void principal_function(void *argv)
         PID_control -> client_send(buffer_send, sizeof(send_packet));
                 
         /* Data storage */
-         whileloop_counter++;
+        whileloop_counter++;
         reference_traj.row(whileloop_counter) << 0, 0, reference_position, 0;
-        state_traj.row(whileloop_counter)(2) = position;
+        state_traj.row(whileloop_counter) = previous_state;
         control_traj.row(whileloop_counter) = u;
         /*Data storage ends*/
-                
-        /*state_traj = trajectorystore(previous_state, whileloop_counter);
-        control_traj = trajectorystore(u, whileloop_counter); 
-        reference_traj = trajectorystore(ref_init, whileloop_counter);*/
+
                 
         //whileloop_counter++;
         cout << "/n the time past is : " << t;
@@ -395,15 +392,6 @@ int main (int argc, char* argv[])
     controltrajdata.open ("control_trajectory.txt");
     controltrajdata << control_traj ;//"Writing this to a file.\n";
     controltrajdata.close();
-            
-    /*cout << "\n rows and column of state_traj: " << state_traj.rows() << "," << state_traj.cols();
-    cout << "\n rows and column of ref_traj: " << reference_traj.rows() << "," << reference_traj.cols();
-    cout << "\n rows and column of control_traj: " << control_traj.rows() << "," << control_traj.cols();*/
-            
-    /* cout << "\n last column of state_traj : " << state_traj.col(3);
-    cout << "\n last column of ref_traj : " << reference_traj.col(3);
-    cout << "\n last column of control_traj : " << control_traj.col(3);*/
-    //cout << state_traj << endl;
-            
+           
 }
              
