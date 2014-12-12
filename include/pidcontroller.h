@@ -1,9 +1,12 @@
-#ifndef CONTROLATCLIENT_H
-#define CONTROLATCLIENT_H
+#ifndef PIDCONTROLLER_H
+#define PIDCONTROLLER_H
 
-//#include "serverudp3.h"
-#include "clientudp3.h"
-
+//#include "clientudp3.h"
+#include <signal.h>
+#include <unistd.h>
+#include <sys/mman.h>
+#include <fstream>
+#include <sstream>
 #include <Eigen/Core>
 #include <math.h>
 
@@ -12,7 +15,7 @@
 using namespace std;
 using namespace Eigen;
 
-class  control_model :    public pid_controller, public ClientUDP   
+class  pid_controller   
 {
     protected:
             
@@ -25,17 +28,15 @@ class  control_model :    public pid_controller, public ClientUDP
             
     public:
             /// Constructor
-            control_model () : pid_controller(), ClientUDP()
-            {
-                    
-            }
+            pid_controller();
+            
                 
-            //void setpidcoeff(int p, int i, int d);
-            void setsmcparameters(double lambda, double phi, double gain);
+            void setcontrollerparameter(int p, int i, int d);
+            //void setsmcparameters(double lambda, double phi, double gain);
             //MatrixXd trajecotystore(MatrixXd reference_traj, MatrixXdstate_traj, MatrixXd control_traj, int col);
             //MatrixXd trajectorystore(VectorXd traj, int column);
-            //VectorXd pid(Vector3d coefficient, double error_component );
-            VectorXd getControl (int controller_type, VectorXd statevector, double reference_position, double position);
+            VectorXd pid(Vector3d coefficient, double error_component );
+            //VectorXd getControl (VectorXd statevector, double reference_position, double position);
                 
 };
     

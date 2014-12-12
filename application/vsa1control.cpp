@@ -73,7 +73,7 @@ double reference_generator(double ref_pos)
 struct udppacket_control
 {
     char CLIENT_HEADER;
-    unsigned int control_cmd[3];
+    double control_cmd[3];
 }client_packet_control;
     
 struct udppacket_bool
@@ -121,7 +121,8 @@ std::ostream& operator<<(std::ostream& os, const struct udppacket_DAQ & obj)
     << " " << obj.data[0] 
     << " " << obj.data[1] 
     << " " << obj.data[2]
-    << " " << obj.data[3];
+    << " " << obj.data[3]
+    << " " << obj.data[4];
     return os; 
 }  
     
@@ -160,16 +161,16 @@ void principal_function(void *argv)
     int nsig;
         
     /* Variables of system dynamics state space */
-    VectorXd initial_state(4); 
-    initial_state << 0, 0, 0, 0;
+    VectorXd initial_state(5); 
+    initial_state << 0, 0, 0, 101e3, 101e3;
 
     /*  Variables used in Controller */
-    int p = 10;
+    int p = 1;
     int i = 1;
     int d = 1;
     VectorXd u(3);
     VectorXd initial_control(3);
-    initial_control << 1.3, 2.01,0.001;
+    initial_control << 0.3, 0.7, 0.001;
     //u(0) = u_init;
     //VSA1axis -> setpidcoeff(p,i,d);
             
@@ -232,8 +233,8 @@ void principal_function(void *argv)
             /**/
     
     send_packet.CLIENT_HEADER = '0';
-    send_packet.control_cmd[0] = u(0);
-    send_packet.control_cmd[1] = u(1);
+    send_packet.control_cmd[0] = 0.6;//u(0);
+    send_packet.control_cmd[1] = 0.4;//u(1);
     send_packet.control_cmd[2] = u(2);
     buffer_send = (char*)&send_packet;
     
@@ -286,7 +287,8 @@ void principal_function(void *argv)
     	}
         
         previous_state << (*recv_packet_DAQ).data[0], (*recv_packet_DAQ).data[1], 
-                          (*recv_packet_DAQ).data[2], (*recv_packet_DAQ).data[3];
+                          (*recv_packet_DAQ).data[2], (*recv_packet_DAQ).data[3],
+                          (*recv_packet_DAQ).data[4];
         
         
         cout << "\n Previous state \n" << previous_state;
