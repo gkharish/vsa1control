@@ -70,30 +70,43 @@ double reference_generator(double ref_pos)
         
 // Packets to be sent //    
  
-struct udppacket_control
+struct udppacket_control                    // clientheader = '0';
 {
     char CLIENT_HEADER;
-    double control_cmd[3];
+    //double control_cmd[3];
+    unsigned int control_cmd[16];
 }client_packet_control;
     
-struct udppacket_bool
+struct udppacket_countersreset              // clientheader = '1';
 {
     char CLIENT_HEADER;
     bool data;
-}client_packet_bool;
+}client_packet_countersreset;
+
+struct udppacket_digitaloutputcontrol       // clientheader = '2';
+{
+    char CLIENT_HEADER;
+    bool data;
+}client_packet_digitaloutputcontrol;
    
 // packets to be received //
-struct udppacket_DAQ
+struct udppacket_DAQ                        // serverheader = 'a';
 {
     char SERVER_HEADER;
     float data[32];
 }client_packet_DAQ;  
     
-struct udppacket_COUNTER
+struct udppacket_COUNTER                    // serverheader = 'b';
 {
     char SERVER_HEADER;
     signed int data[12];
 }client_packet_COUNTER;  
+
+struct udppacket_error                      // serverheader = 'c';
+{
+    char SERVER_HEADER;
+    unsigned char data[4];
+}client_packet_error; 
  
 std::ostream& operator<<(std::ostream& os, const struct udppacket_control & obj)
 {
@@ -105,14 +118,23 @@ std::ostream& operator<<(std::ostream& os, const struct udppacket_control & obj)
     return os; 
 }  
     
-std::ostream& operator<<(std::ostream& os, const struct udppacket_bool & obj)
+std::ostream& operator<<(std::ostream& os, const struct udppacket_countersreset & obj)
 {
     // write obj to stream
     os << " " << obj.CLIENT_HEADER 
 	<< " " << obj.data; 
 	 
     return os; 
-}          
+}  
+
+std::ostream& operator<<(std::ostream& os, const struct udppacket_digitaloutputcontrol & obj)
+{
+    // write obj to stream
+    os << " " << obj.CLIENT_HEADER 
+	<< " " << obj.data; 
+	 
+    return os; 
+}
 
 std::ostream& operator<<(std::ostream& os, const struct udppacket_DAQ & obj)
 {
@@ -135,7 +157,16 @@ std::ostream& operator<<(std::ostream& os, const struct udppacket_COUNTER & obj)
     return os; 
 }        
         
-        
+std::ostream& operator<<(std::ostream& os, const struct udppacket_error & obj)
+{
+    // write obj to stream
+    os << " " << obj.SERVER_HEADER 
+    << " " << obj.data[0] 
+    << " " << obj.data[1]
+    << " " << obj.data[2]
+    << " " << obj.data[3];
+    return os; 
+}        
         
 /* Real Time function  */
 RT_TASK principal_task;
@@ -178,11 +209,13 @@ void principal_function(void *argv)
     char buf[BUFLEN];
     
     udppacket_control send_packet;
-    udppacket_bool send_packet_bool;
+    udppacket_countersreset send_packet_countersreset;
+    udppacket_digitaloutputcontrol send_packet_digitaloutputcontrol;
     char*  buffer_send;
   
     udppacket_COUNTER * recv_packet_COUNTER;
-    udppacket_DAQ * recv_packet_DAQ;  
+    udppacket_DAQ * recv_packet_DAQ; 
+    udppacket_error * recv_packet_error;
     char recv_buffer[BUFLEN];
     
     /*  Variables used in real time Timer   */     
@@ -233,9 +266,9 @@ void principal_function(void *argv)
             /**/
     
     send_packet.CLIENT_HEADER = '0';
-    send_packet.control_cmd[0] = 0.6;//u(0);
-    send_packet.control_cmd[1] = 0.4;//u(1);
-    send_packet.control_cmd[2] = u(2);
+    send_packet.control_cmd[0] = 6;//u(0);
+    send_packet.control_cmd[1] = 4;//u(1);
+    send_packet.control_cmd[2] = 2;
     buffer_send = (char*)&send_packet;
     
     //struct udppacket_control *asp_control = &send_packet;
@@ -261,21 +294,33 @@ void principal_function(void *argv)
     	switch(recv_buffer[0])
     	{
     		    
-    	    case '0' :
+    	    case 'a' :
     		{
     		        
     		    recv_packet_DAQ = (udppacket_DAQ *)recv_buffer;
-    		        
+    		    
+    		    previous_state << (*recv_packet_DAQ).data[0], (*recv_packet_DAQ).data[1], 
+                          (*recv_packet_DAQ).data[2], (*recv_packet_DAQ).data[3],
+                          (*recv_packet_DAQ).data[4];
+                cout << "\n Previous state \n" << *recv_packet_DAQ;
         	    //std::cout << "\n  server message received is DAQ float type: " << *recv_packet_DAQ << std::endl;
         	    break;
     	    }
     		    
     		    
     		    
-            case '1' :
+            case 'b' :
     	    {
     		    recv_packet_COUNTER = (udppacket_COUNTER *)recv_buffer;
-    		        
+    		    cout << "\n recv_packet_COUNTER \n" << *recv_packet_COUNTER;    
+        	    //std::cout << "\n  server message received is COUNTER of signed int type : " << *recv_packet_COUNTER << std::endl;
+        	    break;
+            }
+            
+            case 'c' :
+    	    {
+    		    recv_packet_error = (udppacket_error *)recv_buffer;
+    		    cout << "\n recv_packet_error \n" << *recv_packet_error;    
         	    //std::cout << "\n  server message received is COUNTER of signed int type : " << *recv_packet_COUNTER << std::endl;
         	    break;
             }
@@ -286,28 +331,52 @@ void principal_function(void *argv)
     		   
     	}
         
-        previous_state << (*recv_packet_DAQ).data[0], (*recv_packet_DAQ).data[1], 
-                          (*recv_packet_DAQ).data[2], (*recv_packet_DAQ).data[3],
-                          (*recv_packet_DAQ).data[4];
         
         
-        cout << "\n Previous state \n" << previous_state;
+        
+        
         double position = previous_state(2);
         
         u = PID_control -> getControl(previous_state, reference_position, position );
 
         /* ** Clinet send control data ** */
         
-        send_packet.CLIENT_HEADER  = '0';
+        /*send_packet.CLIENT_HEADER  = '0';
         send_packet.control_cmd[0] = u(0);
         send_packet.control_cmd[1] = u(1);
-        send_packet.control_cmd[2] = u(2);
+        send_packet.control_cmd[2] = u(2);*/
+        //control cmd send
+        send_packet.CLIENT_HEADER = '0';
+        send_packet.control_cmd[0] = 6;//u(0);
+        send_packet.control_cmd[1] = 4;//u(1);
+        send_packet.control_cmd[2] = 2;
         buffer_send = (char*)&send_packet;
         //cout << "\n after buffer load and before client send :" << buffer_send;
         struct udppacket_control *asp_control = &send_packet;
-        std::cout << "\n  client message send is unsigned int: " << *asp_control << std::endl;
+        std::cout << "\n  client message send is unsigned int control: " << *asp_control << std::endl;
         PID_control -> client_send(buffer_send, sizeof(send_packet));
-                
+        
+        
+        // countersreset send
+        send_packet_countersreset.CLIENT_HEADER = '1';
+        send_packet_countersreset.data = true;//u(0);
+        
+        buffer_send = (char*)&send_packet_countersreset;
+        //cout << "\n after buffer load and before client send :" << buffer_send;
+        struct udppacket_countersreset *asp_countersreset = &send_packet_countersreset;
+        std::cout << "\n  client message send is bool countersreset: " << *asp_countersreset << std::endl;
+        PID_control -> client_send(buffer_send, sizeof(send_packet_countersreset));
+        
+        // digitaloutputcontrol send
+        send_packet_digitaloutputcontrol.CLIENT_HEADER = '2';
+        send_packet_digitaloutputcontrol.data = false;//u(0);
+        
+        buffer_send = (char*)&send_packet_digitaloutputcontrol;
+        //cout << "\n after buffer load and before client send :" << buffer_send;
+        struct udppacket_digitaloutputcontrol *asp_digitaloutputcontrol = &send_packet_digitaloutputcontrol;
+        std::cout << "\n  client message send is bool digitaloutputcontrol: " << *asp_digitaloutputcontrol << std::endl;
+        PID_control -> client_send(buffer_send, sizeof(send_packet_digitaloutputcontrol));
+           
         /* Data storage */
         whileloop_counter++;
         reference_traj.row(whileloop_counter) << 0, 0, reference_position, 0;
