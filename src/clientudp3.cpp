@@ -15,7 +15,7 @@ ClientUDP::~ClientUDP()
     
 bool ClientUDP::client_start()
 {
-    server = "169.254.7.183"; // 192.168.101.2
+    server = "192.168.101.2"; // 169.254.7.183
     if ((fd=socket(AF_INET, SOCK_DGRAM, 0))==-1)
     {
         perror("socket created failed");
@@ -28,7 +28,7 @@ bool ClientUDP::client_start()
     memset((char *)&myaddr, 0, sizeof(myaddr));
     myaddr.sin_family = AF_INET;
     myaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-    myaddr.sin_port = htons(0);
+    myaddr.sin_port = htons(SERVICE_PORT);
     
     if (bind(fd, (struct sockaddr *)&myaddr, sizeof(myaddr)) < 0) 
     {

@@ -73,8 +73,8 @@ double reference_generator(double ref_pos)
 struct udppacket_control                    // clientheader = '0';
 {
     char CLIENT_HEADER;
-    double control_cmd[3];
-    //unsigned int control_cmd[16];
+    //double control_cmd[3];
+    unsigned int control_cmd[16];
 }client_packet_control;
     
 struct udppacket_countersreset              // clientheader = '1';
@@ -273,7 +273,7 @@ void principal_function(void *argv)
     
     //struct udppacket_control *asp_control = &send_packet;
     //std::cout << "\n  server message received is unsigned int: " << *asp_control << std::endl;
-    PID_control -> client_send(buffer_send, sizeof(send_packet));
+    //PID_control -> client_send(buffer_send, sizeof(send_packet));
     
     
 
