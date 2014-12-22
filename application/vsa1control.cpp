@@ -303,7 +303,28 @@ void principal_function(void *argv)
                           (*recv_packet_DAQ).data[2], (*recv_packet_DAQ).data[3],
                           (*recv_packet_DAQ).data[4];
                 cout << "\n Previous state \n" << *recv_packet_DAQ;
-        	    //std::cout << "\n  server message received is DAQ float type: " << *recv_packet_DAQ << std::endl;
+        	    
+        	    double position = previous_state(2);
+        
+                u = PID_control -> getControl(previous_state, reference_position, position );
+        
+                /* ** Clinet send control data ** */
+                
+                /*send_packet.CLIENT_HEADER  = '0';
+                send_packet.control_cmd[0] = u(0);
+                send_packet.control_cmd[1] = u(1);
+                send_packet.control_cmd[2] = u(2);*/
+                //control cmd send
+                send_packet.CLIENT_HEADER = '0';
+                send_packet.control_cmd[0] = 6;//u(0);
+                send_packet.control_cmd[1] = 4;//u(1);
+                send_packet.control_cmd[2] = 2;
+                buffer_send = (char*)&send_packet;
+                //cout << "\n after buffer load and before client send :" << buffer_send;
+                struct udppacket_control *asp_control = &send_packet;
+                std::cout << "\n  client message send is unsigned int control: " << *asp_control << std::endl;
+                PID_control -> client_send(buffer_send, sizeof(send_packet));
+                	    
         	    break;
     	    }
     		    
@@ -313,7 +334,14 @@ void principal_function(void *argv)
     	    {
     		    recv_packet_COUNTER = (udppacket_COUNTER *)recv_buffer;
     		    cout << "\n recv_packet_COUNTER \n" << *recv_packet_COUNTER;    
-        	    //std::cout << "\n  server message received is COUNTER of signed int type : " << *recv_packet_COUNTER << std::endl;
+        	    // countersreset send
+        	    send_packet_countersreset.CLIENT_HEADER = '1';
+                send_packet_countersreset.data = true;//u(0);
+                buffer_send = (char*)&send_packet_countersreset;
+                struct udppacket_countersreset *asp_countersreset = &send_packet_countersreset;
+                std::cout << "\n  client message send is bool countersreset: " << *asp_countersreset << std::endl;
+                PID_control -> client_send(buffer_send, sizeof(send_packet_countersreset));
+        	    
         	    break;
             }
             
@@ -321,7 +349,16 @@ void principal_function(void *argv)
     	    {
     		    recv_packet_error = (udppacket_error *)recv_buffer;
     		    cout << "\n recv_packet_error \n" << *recv_packet_error;    
-        	    //std::cout << "\n  server message received is COUNTER of signed int type : " << *recv_packet_COUNTER << std::endl;
+        	    // digitaloutputcontrol send
+                send_packet_digitaloutputcontrol.CLIENT_HEADER = '2';
+                send_packet_digitaloutputcontrol.data = false;//u(0);
+                
+                buffer_send = (char*)&send_packet_digitaloutputcontrol;
+                //cout << "\n after buffer load and before client send :" << buffer_send;
+                struct udppacket_digitaloutputcontrol *asp_digitaloutputcontrol = &send_packet_digitaloutputcontrol;
+                std::cout << "\n  client message send is bool digitaloutputcontrol: " << *asp_digitaloutputcontrol << std::endl;
+                PID_control -> client_send(buffer_send, sizeof(send_packet_digitaloutputcontrol));
+                   
         	    break;
             }
     		    
@@ -331,52 +368,8 @@ void principal_function(void *argv)
     		   
     	}
         
-        
-        
-        
-        
-        double position = previous_state(2);
-        
-        u = PID_control -> getControl(previous_state, reference_position, position );
 
-        /* ** Clinet send control data ** */
-        
-        /*send_packet.CLIENT_HEADER  = '0';
-        send_packet.control_cmd[0] = u(0);
-        send_packet.control_cmd[1] = u(1);
-        send_packet.control_cmd[2] = u(2);*/
-        //control cmd send
-        send_packet.CLIENT_HEADER = '0';
-        send_packet.control_cmd[0] = 6;//u(0);
-        send_packet.control_cmd[1] = 4;//u(1);
-        send_packet.control_cmd[2] = 2;
-        buffer_send = (char*)&send_packet;
-        //cout << "\n after buffer load and before client send :" << buffer_send;
-        struct udppacket_control *asp_control = &send_packet;
-        std::cout << "\n  client message send is unsigned int control: " << *asp_control << std::endl;
-        PID_control -> client_send(buffer_send, sizeof(send_packet));
-        
-        
-        // countersreset send
-        send_packet_countersreset.CLIENT_HEADER = '1';
-        send_packet_countersreset.data = true;//u(0);
-        
-        buffer_send = (char*)&send_packet_countersreset;
-        //cout << "\n after buffer load and before client send :" << buffer_send;
-        struct udppacket_countersreset *asp_countersreset = &send_packet_countersreset;
-        std::cout << "\n  client message send is bool countersreset: " << *asp_countersreset << std::endl;
-        PID_control -> client_send(buffer_send, sizeof(send_packet_countersreset));
-        
-        // digitaloutputcontrol send
-        send_packet_digitaloutputcontrol.CLIENT_HEADER = '2';
-        send_packet_digitaloutputcontrol.data = false;//u(0);
-        
-        buffer_send = (char*)&send_packet_digitaloutputcontrol;
-        //cout << "\n after buffer load and before client send :" << buffer_send;
-        struct udppacket_digitaloutputcontrol *asp_digitaloutputcontrol = &send_packet_digitaloutputcontrol;
-        std::cout << "\n  client message send is bool digitaloutputcontrol: " << *asp_digitaloutputcontrol << std::endl;
-        PID_control -> client_send(buffer_send, sizeof(send_packet_digitaloutputcontrol));
-           
+       
         /* Data storage */
         whileloop_counter++;
         reference_traj.row(whileloop_counter) << 0, 0, reference_position, 0;
