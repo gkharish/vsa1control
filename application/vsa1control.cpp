@@ -73,8 +73,8 @@ double reference_generator(double ref_pos)
 struct udppacket_control                    // clientheader = '0';
 {
     char CLIENT_HEADER;
-    //double control_cmd[3];
-    unsigned int control_cmd[16];
+    double control_cmd[3];
+    //unsigned int control_cmd[16];
 }client_packet_control;
     
 struct udppacket_countersreset              // clientheader = '1';
@@ -187,13 +187,13 @@ void principal_function(void *argv)
     
     /* variables used in the principal program */
     int whileloop_counter = 0, error_counter = 0, loop = 0;
-    int timeofsimulation_s = 30; /* time in seconds*/
+    int timeofsimulation_s = 5; /* time in seconds*/
     int FLAG = 1;
     int nsig;
         
     /* Variables of system dynamics state space */
     VectorXd initial_state(5); 
-    initial_state << 0, 0, 0, 101e3, 101e3;
+    initial_state << 0.01, 0, 0, 101e3, 101e3;
 
     /*  Variables used in Controller */
     int p = 1;
@@ -201,7 +201,7 @@ void principal_function(void *argv)
     int d = 1;
     VectorXd u(3);
     VectorXd initial_control(3);
-    initial_control << 0.3, 0.7, 0.001;
+    initial_control << 0.1, 0, 0;
     //u(0) = u_init;
     //VSA1axis -> setpidcoeff(p,i,d);
             
@@ -227,7 +227,7 @@ void principal_function(void *argv)
     double ref_pos = 30;
     VectorXd ref_init(4);
     ref_init << 0.52,0,0.52,0;
-    cout << ref_init;
+    //cout << ref_init;
         
     /*  Initialization */
             
@@ -266,9 +266,9 @@ void principal_function(void *argv)
             /**/
     
     send_packet.CLIENT_HEADER = '0';
-    send_packet.control_cmd[0] = 6;//u(0);
-    send_packet.control_cmd[1] = 4;//u(1);
-    send_packet.control_cmd[2] = 2;
+    send_packet.control_cmd[0] = u(0);
+    send_packet.control_cmd[1] = u(1);
+    
     buffer_send = (char*)&send_packet;
     
     //struct udppacket_control *asp_control = &send_packet;
@@ -316,9 +316,9 @@ void principal_function(void *argv)
                 send_packet.control_cmd[2] = u(2);*/
                 //control cmd send
                 send_packet.CLIENT_HEADER = '0';
-                send_packet.control_cmd[0] = 6;//u(0);
-                send_packet.control_cmd[1] = 4;//u(1);
-                send_packet.control_cmd[2] = 2;
+                send_packet.control_cmd[0] = u(0);
+                send_packet.control_cmd[1] = u(1);
+                
                 buffer_send = (char*)&send_packet;
                 //cout << "\n after buffer load and before client send :" << buffer_send;
                 struct udppacket_control *asp_control = &send_packet;
