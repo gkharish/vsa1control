@@ -190,6 +190,30 @@ clientudp3.cpp.s:
 	cd /usr/users/localuser/softdev/vsa1control/build && $(MAKE) -f src/CMakeFiles/vsa1control.dir/build.make src/CMakeFiles/vsa1control.dir/clientudp3.cpp.s
 .PHONY : clientudp3.cpp.s
 
+pidcontroller.o: pidcontroller.cpp.o
+.PHONY : pidcontroller.o
+
+# target to build an object file
+pidcontroller.cpp.o:
+	cd /usr/users/localuser/softdev/vsa1control/build && $(MAKE) -f src/CMakeFiles/vsa1control.dir/build.make src/CMakeFiles/vsa1control.dir/pidcontroller.cpp.o
+.PHONY : pidcontroller.cpp.o
+
+pidcontroller.i: pidcontroller.cpp.i
+.PHONY : pidcontroller.i
+
+# target to preprocess a source file
+pidcontroller.cpp.i:
+	cd /usr/users/localuser/softdev/vsa1control/build && $(MAKE) -f src/CMakeFiles/vsa1control.dir/build.make src/CMakeFiles/vsa1control.dir/pidcontroller.cpp.i
+.PHONY : pidcontroller.cpp.i
+
+pidcontroller.s: pidcontroller.cpp.s
+.PHONY : pidcontroller.s
+
+# target to generate assembly for a file
+pidcontroller.cpp.s:
+	cd /usr/users/localuser/softdev/vsa1control/build && $(MAKE) -f src/CMakeFiles/vsa1control.dir/build.make src/CMakeFiles/vsa1control.dir/pidcontroller.cpp.s
+.PHONY : pidcontroller.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -207,6 +231,9 @@ help:
 	@echo "... clientudp3.o"
 	@echo "... clientudp3.i"
 	@echo "... clientudp3.s"
+	@echo "... pidcontroller.o"
+	@echo "... pidcontroller.i"
+	@echo "... pidcontroller.s"
 .PHONY : help
 
 

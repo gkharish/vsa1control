@@ -5,6 +5,7 @@ SET(CMAKE_DEPENDS_LANGUAGES
 # The set of files for implicit dependencies of each language:
 SET(CMAKE_DEPENDS_CHECK_CXX
   "/usr/users/localuser/softdev/vsa1control/src/clientudp3.cpp" "/usr/users/localuser/softdev/vsa1control/build/src/CMakeFiles/vsa1control.dir/clientudp3.cpp.o"
+  "/usr/users/localuser/softdev/vsa1control/src/pidcontroller.cpp" "/usr/users/localuser/softdev/vsa1control/build/src/CMakeFiles/vsa1control.dir/pidcontroller.cpp.o"
   )
 SET(CMAKE_CXX_COMPILER_ID "GNU")
 

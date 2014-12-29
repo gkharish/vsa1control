@@ -3,6 +3,7 @@
 
 application/CMakeFiles/test-vsa1controlclient.dir/vsa1control.cpp.o: ../include/clientudp3.h
 application/CMakeFiles/test-vsa1controlclient.dir/vsa1control.cpp.o: ../include/controlatclient.h
+application/CMakeFiles/test-vsa1controlclient.dir/vsa1control.cpp.o: ../include/pidcontroller.h
 application/CMakeFiles/test-vsa1controlclient.dir/vsa1control.cpp.o: ../include/port.h
 application/CMakeFiles/test-vsa1controlclient.dir/vsa1control.cpp.o: /usr/include/eigen3/Eigen/Core
 application/CMakeFiles/test-vsa1controlclient.dir/vsa1control.cpp.o: /usr/include/eigen3/Eigen/Eigen2Support

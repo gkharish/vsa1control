@@ -15,7 +15,6 @@ generator = Unix Makefiles
 
 PATH /opt/ros/hydro/bin
 PATH /usr/java/jre1.8.0_25/bin
-PATH /usr/lib/lightdm/lightdm
 PATH /usr/local/sbin
 PATH /usr/local/bin
 PATH /usr/sbin

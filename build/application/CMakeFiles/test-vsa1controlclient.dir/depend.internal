@@ -4,6 +4,7 @@
 application/CMakeFiles/test-vsa1controlclient.dir/vsa1control.cpp.o
  ../include/clientudp3.h
  ../include/controlatclient.h
+ ../include/pidcontroller.h
  ../include/port.h
  /usr/include/eigen3/Eigen/Core
  /usr/include/eigen3/Eigen/Eigen2Support

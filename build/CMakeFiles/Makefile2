@@ -356,7 +356,7 @@ src/preinstall:
 src/CMakeFiles/vsa1control.dir/all:
 	$(MAKE) -f src/CMakeFiles/vsa1control.dir/build.make src/CMakeFiles/vsa1control.dir/depend
 	$(MAKE) -f src/CMakeFiles/vsa1control.dir/build.make src/CMakeFiles/vsa1control.dir/build
-	$(CMAKE_COMMAND) -E cmake_progress_report /usr/users/localuser/softdev/vsa1control/build/CMakeFiles  9
+	$(CMAKE_COMMAND) -E cmake_progress_report /usr/users/localuser/softdev/vsa1control/build/CMakeFiles  9 10
 	@echo "Built target vsa1control"
 .PHONY : src/CMakeFiles/vsa1control.dir/all
 
@@ -366,7 +366,7 @@ all: src/CMakeFiles/vsa1control.dir/all
 
 # Build rule for subdir invocation for target.
 src/CMakeFiles/vsa1control.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /usr/users/localuser/softdev/vsa1control/build/CMakeFiles 1
+	$(CMAKE_COMMAND) -E cmake_progress_start /usr/users/localuser/softdev/vsa1control/build/CMakeFiles 2
 	$(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/vsa1control.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /usr/users/localuser/softdev/vsa1control/build/CMakeFiles 0
 .PHONY : src/CMakeFiles/vsa1control.dir/rule
@@ -416,7 +416,7 @@ all: application/CMakeFiles/test-vsa1controlclient.dir/all
 
 # Build rule for subdir invocation for target.
 application/CMakeFiles/test-vsa1controlclient.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /usr/users/localuser/softdev/vsa1control/build/CMakeFiles 2
+	$(CMAKE_COMMAND) -E cmake_progress_start /usr/users/localuser/softdev/vsa1control/build/CMakeFiles 3
 	$(MAKE) -f CMakeFiles/Makefile2 application/CMakeFiles/test-vsa1controlclient.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /usr/users/localuser/softdev/vsa1control/build/CMakeFiles 0
 .PHONY : application/CMakeFiles/test-vsa1controlclient.dir/rule
