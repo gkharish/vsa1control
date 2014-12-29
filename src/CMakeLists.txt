@@ -36,6 +36,7 @@ SET(LIBRARY_NAME ${PROJECT_NAME})
 ADD_LIBRARY(${LIBRARY_NAME}
   SHARED
   clientudp3.cpp
+  pidcontroller.cpp
   ${${PROJECT_NAME}_ABSOLUTE_HEADERS}
   )
 

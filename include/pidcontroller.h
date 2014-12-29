@@ -23,6 +23,7 @@ class  pid_controller
             double _p;
             double _i;
             double _d;
+            Vector3d coefficient;
             int nDOF_;
             //MatrixXd reference_traj, state_traj, control_traj;
             
@@ -31,12 +32,10 @@ class  pid_controller
             pid_controller();
             
                 
-            void setcontrollerparameter(int p, int i, int d);
-            //void setsmcparameters(double lambda, double phi, double gain);
-            //MatrixXd trajecotystore(MatrixXd reference_traj, MatrixXdstate_traj, MatrixXd control_traj, int col);
-            //MatrixXd trajectorystore(VectorXd traj, int column);
-            VectorXd pid(Vector3d coefficient, double error_component );
-            //VectorXd getControl (VectorXd statevector, double reference_position, double position);
+            void setpidcoeff(int p, int i, int d);
+            
+            VectorXd pid(double error_component );
+            
                 
 };
     

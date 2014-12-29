@@ -14,7 +14,7 @@
 
 
 /* Implementing Feedback control laws */
-VectorXd control_model::getControl (VectorXd statevector, double reference_position, double position)
+/*VectorXd control_model::getControl (VectorXd statevector, double reference_position, double position)
 {
     VectorXd control;
 
@@ -29,10 +29,10 @@ VectorXd control_model::getControl (VectorXd statevector, double reference_posit
                         
     
     return control;
-}
+}*/
         
 /* Setting coeeffecient of PID controller  */
-void control_model::setpidcoeff(int p, int i, int d)
+/*void control_model::setpidcoeff(int p, int i, int d)
 {
     _p = p;
     _i = i;
@@ -47,7 +47,7 @@ VectorXd control_model::pid(Vector3d coeffecient, double error_component)
     control = coeffecient * error_component;
             
     return control;
-}
+}*/
         
 /*MatrixXd trajectorystore(VectorXd traj, int column)
 {
@@ -187,7 +187,7 @@ void principal_function(void *argv)
     
     /* variables used in the principal program */
     int whileloop_counter = 0, error_counter = 0, loop = 0;
-    int timeofsimulation_s = 5; /* time in seconds*/
+    int timeofsimulation_s = 1; /* time in seconds*/
     int FLAG = 1;
     int nsig;
         
@@ -233,10 +233,10 @@ void principal_function(void *argv)
             
             
             
-    control_model* PID_control = new control_model(); // creating an object of pam 
-    PID_control -> client_start();
+    control_model* controller = new control_model(); // creating an object of pam 
+    controller -> client_start();
             
-    PID_control -> setpidcoeff(p,i,d);
+    controller -> setpidcoeff(p,i,d);
     u << initial_control;
     VectorXd previous_state = initial_state;
             
@@ -271,9 +271,9 @@ void principal_function(void *argv)
     
     buffer_send = (char*)&send_packet;
     
-    //struct udppacket_control *asp_control = &send_packet;
-    //std::cout << "\n  server message received is unsigned int: " << *asp_control << std::endl;
-    //PID_control -> client_send(buffer_send, sizeof(send_packet));
+    struct udppacket_control *asp_control = &send_packet;
+    std::cout << "\n  server message received is unsigned int: " << *asp_control << std::endl;
+    controller -> client_send(buffer_send, sizeof(send_packet));
     
     
 
@@ -288,7 +288,7 @@ void principal_function(void *argv)
         
         
         /* ** Recive data from server ** */
-        PID_control -> client_recv(recv_buffer, BUFLEN);
+        controller -> client_recv(recv_buffer, BUFLEN);
     		
     	
     	switch(recv_buffer[0])
@@ -304,16 +304,15 @@ void principal_function(void *argv)
                           (*recv_packet_DAQ).data[4];
                 cout << "\n Previous state \n" << *recv_packet_DAQ;
         	    
+        	    // PID controller imlpementation
+        	    
         	    double position = previous_state(2);
-        
-                u = PID_control -> getControl(previous_state, reference_position, position );
-        
+                double error_component = reference_position - position; 
+                //u = controller -> getControl(previous_state, reference_position, position );
+                u = controller -> pid(error_component);
                 /* ** Clinet send control data ** */
                 
-                /*send_packet.CLIENT_HEADER  = '0';
-                send_packet.control_cmd[0] = u(0);
-                send_packet.control_cmd[1] = u(1);
-                send_packet.control_cmd[2] = u(2);*/
+                
                 //control cmd send
                 send_packet.CLIENT_HEADER = '0';
                 send_packet.control_cmd[0] = u(0);
@@ -323,7 +322,7 @@ void principal_function(void *argv)
                 //cout << "\n after buffer load and before client send :" << buffer_send;
                 struct udppacket_control *asp_control = &send_packet;
                 std::cout << "\n  client message send is unsigned int control: " << *asp_control << std::endl;
-                PID_control -> client_send(buffer_send, sizeof(send_packet));
+                controller -> client_send(buffer_send, sizeof(send_packet));
                 	    
         	    break;
     	    }
@@ -340,7 +339,7 @@ void principal_function(void *argv)
                 buffer_send = (char*)&send_packet_countersreset;
                 struct udppacket_countersreset *asp_countersreset = &send_packet_countersreset;
                 std::cout << "\n  client message send is bool countersreset: " << *asp_countersreset << std::endl;
-                PID_control -> client_send(buffer_send, sizeof(send_packet_countersreset));
+                controller -> client_send(buffer_send, sizeof(send_packet_countersreset));
         	    
         	    break;
             }
@@ -357,7 +356,7 @@ void principal_function(void *argv)
                 //cout << "\n after buffer load and before client send :" << buffer_send;
                 struct udppacket_digitaloutputcontrol *asp_digitaloutputcontrol = &send_packet_digitaloutputcontrol;
                 std::cout << "\n  client message send is bool digitaloutputcontrol: " << *asp_digitaloutputcontrol << std::endl;
-                PID_control -> client_send(buffer_send, sizeof(send_packet_digitaloutputcontrol));
+                controller -> client_send(buffer_send, sizeof(send_packet_digitaloutputcontrol));
                    
         	    break;
             }
