@@ -1,4 +1,4 @@
- Copyright 2014, CNRS
+# Copyright 2014, CNRS
 #
 # Author: Ganesh Kumar
 #
