@@ -260,7 +260,7 @@ void principal_function(void *argv)
     	switch(recv_buffer[0])
     	{
     		    
-    	    case '0' :
+    	    case 'a' :
     		{
     		        
     		    recv_packet_DAQ = (udppacket_DAQ *)recv_buffer;
@@ -271,7 +271,7 @@ void principal_function(void *argv)
     		    
     		    
     		    
-            case '1' :
+            case 'b' :
     	    {
     		    recv_packet_COUNTER = (udppacket_COUNTER *)recv_buffer;
     		        
