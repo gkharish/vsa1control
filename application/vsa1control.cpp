@@ -73,8 +73,8 @@ double reference_generator(double ref_pos)
 struct udppacket_control                    // clientheader = '0';
 {
     char CLIENT_HEADER;
-    //double control_cmd[3];
-    unsigned int control_cmd[16];
+    double control_cmd[3];
+    //unsigned int control_cmd[16];
 }client_packet_control;
     
 struct udppacket_countersreset              // clientheader = '1';
@@ -201,7 +201,7 @@ void principal_function(void *argv)
     int d = 1;
     VectorXd u(3);
     VectorXd initial_control(3);
-    initial_control << 0.1, 0, 0;
+    initial_control << 1, 2, 3;
     //u(0) = u_init;
     //VSA1axis -> setpidcoeff(p,i,d);
             
@@ -268,6 +268,7 @@ void principal_function(void *argv)
     send_packet.CLIENT_HEADER = '0';
     send_packet.control_cmd[0] = u(0);
     send_packet.control_cmd[1] = u(1);
+    send_packet.control_cmd[2] = u(2);
     
     buffer_send = (char*)&send_packet;
     
