@@ -27,7 +27,7 @@ bool ClientUDP::client_start()
 
     memset((char *)&myaddr, 0, sizeof(myaddr));
     myaddr.sin_family = AF_INET;
-    myaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+    myaddr.sin_addr.s_addr = htonl(0); //INADDR_ANY
     myaddr.sin_port = htons(SERVICE_PORT);
     
     if (bind(fd, (struct sockaddr *)&myaddr, sizeof(myaddr)) < 0) 
